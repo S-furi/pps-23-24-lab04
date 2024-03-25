@@ -28,7 +28,7 @@ object Ex6TryModel:
   extension [A](m: Try[A]) 
     def getOrElse[B >: A](other: B): B = m match
       case TryImpl.Success(value) => value
-      case TryImpl.Failure(_) => other
+      case TryImpl.Failure(e) => println(e); other
 
   given Monad[Try] with
     override def unit[A](value: A): Try[A] = success(value)
@@ -38,6 +38,7 @@ object Ex6TryModel:
         case TryImpl.Success(value) => f(value)
         case TryImpl.Failure(exception) => failure(exception)
       
+
 @main def main: Unit = 
   import Ex6TryModel.*
 
@@ -62,3 +63,11 @@ object Ex6TryModel:
     b <- exec(new RuntimeException("error"))
     c <- exec(30)
   yield a + c
+
+  def division(a: Double, b: Double): Try[Double] =
+    for
+      res <- exec(a / b)
+    yield res
+
+  println(division(10, 5).getOrElse(-1))
+  println(division(10, 0).getOrElse(-1))
