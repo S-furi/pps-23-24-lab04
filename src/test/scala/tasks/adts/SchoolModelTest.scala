@@ -46,3 +46,8 @@ class SchoolModelTest:
     @Test def testNameOfCourse(): Unit =
         val c: Course = course("PCD")
         assertEquals("PCD", s.nameOfCourse(c))
+
+    @Test def testCoursesOfATeacher(): Unit =
+        val expectedCourses = Cons(course("OOP"), Cons(course("PPS"), Nil()))
+        val t: Teacher = Optional.orElse(s.teacherByName("B"), teacher("B", Nil()))
+        assertEquals(expectedCourses, s.coursesOfATeacher(t))
