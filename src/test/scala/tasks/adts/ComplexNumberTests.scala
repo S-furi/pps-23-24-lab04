@@ -14,14 +14,13 @@ class ComplexTest:
   val complexADT: ComplexADT = BasicComplexADT
   import complexADT.*
 
-  val doubleComparisonDelta = 0.00001
   // From now, everything is independent of specific implementation of Complex
 
   @Test def testReal() =
-    assertEquals(10, complex(10, 20).re(), doubleComparisonDelta)
+    assertEquals(10, complex(10, 20).re(), 0)
 
   @Test def testImaginary() =
-    assertEquals(20, complex(10, 20).im(), doubleComparisonDelta)
+    assertEquals(20, complex(10, 20).im(), 0)
 
   @Test def testSum() =
     assertEquals(complex(11, 22), complex(10, 20) sum complex(1, 2))
