@@ -54,15 +54,26 @@ object SchoolModel:
       def nameOfTeacher(teacher: Teacher): String = teacher match
         case TeacherImpl(name, _) => name
       
-
       def addCourse(name: String): School = school match
         case SchoolImpl(teachers, courses) => SchoolImpl(teachers, courses.addElement(course(name)))
 
       def coursesOfATeacher(teacher: Teacher): Sequence[Course] = teacher match
         case TeacherImpl(_, courses) => courses
       
-
-      def setTeacherToCourse(teacher: Teacher, course: Course): School = ???
+      def setTeacherToCourse(teacher: Teacher, course: Course): School = school match
+        case SchoolImpl(teachers, courses) if teachers.contains(teacher) =>
+          SchoolImpl(
+            filter(teachers)(school.nameOfTeacher(_) != school.nameOfTeacher(teacher)).addElement(addCourseToTeacher(teacher, course)),
+            courses.addIfNotPresent(course),
+          )
+        case SchoolImpl(teachers, courses) =>
+          SchoolImpl(
+            teachers.addElement(addCourseToTeacher(teacher, course)),
+            courses.addIfNotPresent(course)
+          )
+      
+      private def addCourseToTeacher(t: Teacher, c: Course): Teacher = t match
+        case TeacherImpl(name, courses) => TeacherImpl(name, courses.addIfNotPresent(c))
 
       def addTeacher(name: String): School = school match
         case SchoolImpl(teachers, courses) => SchoolImpl(teachers.addElement(teacher(name, Nil())), courses)
@@ -70,7 +81,6 @@ object SchoolModel:
       def nameOfCourse(course: Course): String = course match
         case CourseImpl(name) => name
       
-
       def courseByName(name: String): Optional[Course] = school match
         case SchoolImpl(_, courses) => courses.findFirst(c => c match
           case Course(n) => n == name
@@ -95,4 +105,7 @@ object SchoolModel:
         case Cons(h, t) => Cons(a, Cons(h, t))
         case _ => Cons(a, Nil())
       
+      def contains(a: A): Boolean = !Optional.isEmpty(s.findFirst(_ == a))
+
+      def addIfNotPresent(a: A): Sequence[A] = if !s.contains(a) then s.addElement(a) else s
       

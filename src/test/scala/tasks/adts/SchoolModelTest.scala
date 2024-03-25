@@ -51,3 +51,10 @@ class SchoolModelTest:
         val expectedCourses = Cons(course("OOP"), Cons(course("PPS"), Nil()))
         val t: Teacher = Optional.orElse(s.teacherByName("B"), teacher("B", Nil()))
         assertEquals(expectedCourses, s.coursesOfATeacher(t))
+
+    @Test def testSetTeacherToCourse(): Unit =
+        val expectedCourses =  map(Cons("MDP", Cons("OOP", Cons("PPS", Nil()))))(name => course(name))
+        val t = Optional.orElse(s.teacherByName("B"), teacher("B", Nil()))
+        val s2 = s.setTeacherToCourse(t, course("MDP"))
+        assertEquals(expectedCourses, s2.coursesOfATeacher(Optional.orElse(s2.teacherByName("B"), teacher("B", Nil()))))
+        assertFalse(Optional.isEmpty(s2.courseByName("MDP")))
